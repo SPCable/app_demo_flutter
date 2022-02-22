@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
-
 import 'package:quan_ly_taiducfood/customer_action/view/add_customer.dart';
+import 'package:quan_ly_taiducfood/customer_action/models/customer.dart';
 import 'package:quan_ly_taiducfood/customer_action/view/customer_list_view.dart';
-import 'package:quan_ly_taiducfood/helper/search_delegate.dart';
-import 'package:quan_ly_taiducfood/models/api_repository.dart';
-
-import 'package:quan_ly_taiducfood/models/customer.dart';
+import 'package:quan_ly_taiducfood/main.dart';
+import 'package:quan_ly_taiducfood/order_action/Controller/CustomerController.dart';
 import 'package:quan_ly_taiducfood/order_action/View/Order/order_theme.dart';
-import 'package:quan_ly_taiducfood/repositories/customer_repository.dart';
 import 'package:quan_ly_taiducfood/statistical_action/theme/stat&cus_theme.dart';
 
 class CustomerScreen extends StatefulWidget {
@@ -16,19 +13,26 @@ class CustomerScreen extends StatefulWidget {
 }
 
 class _CustomerScreenState extends State<CustomerScreen> {
-  var _apiResponse = APIResponse();
-  List<Customer> customerList = [];
-  var service = CustomerRespository();
+  var customer = Customer();
+  var _customerService = CustomerService();
+  // ignore: deprecated_member_use
+  List<Customer> _customerList = List();
 
-  _fetchCustomers() async {
-    _apiResponse = await service.getCustomersList();
-    customerList = _apiResponse.data;
-  }
-
-  @override
-  void initState() {
-    _fetchCustomers();
-    super.initState();
+  getAllCustomerList() async {
+    _customerList.clear();
+    var customers = await _customerService.readCustomerList();
+    customers.forEach((customer) {
+      setState(() {
+        var customerModel = new Customer();
+        customerModel.idCustomer = customer['idCustomer'];
+        customerModel.name = customer['name'];
+        customerModel.phone = customer['phone'];
+        customerModel.email = customer['email'];
+        customerModel.address = customer['address'];
+        customerModel.idship = customer['idShip'];
+        _customerList.add(customerModel);
+      });
+    });
   }
 
   @override
@@ -49,6 +53,7 @@ class _CustomerScreenState extends State<CustomerScreen> {
                   height: MediaQuery.of(context).size.height,
                   child: Column(
                     children: <Widget>[
+                      getSearchBarUI(),
                       Flexible(
                         child: getPopularCourseUI(),
                       ),
@@ -57,26 +62,6 @@ class _CustomerScreenState extends State<CustomerScreen> {
                 ),
               ),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: FloatingActionButton(
-                    backgroundColor: DesignCourseAppTheme.grey,
-                    child: Icon(
-                      Icons.search,
-                    ),
-                    onPressed: () {
-                      print(customerList.length);
-                      showSearch(
-                          context: context, delegate: Search(customerList));
-                    },
-                  ),
-                )
-              ],
-            )
           ],
         ),
       ),
@@ -91,7 +76,83 @@ class _CustomerScreenState extends State<CustomerScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Flexible(
-            child: CustomerListView(),
+            child: CustomerListView(
+              callBack: () {
+                setState(() {});
+              },
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget getSearchBarUI() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 8.0, left: 18),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Container(
+            width: MediaQuery.of(context).size.width * 0.75,
+            height: 64,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 8, bottom: 8),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: HexColor('#F8FAFB'),
+                  borderRadius: const BorderRadius.only(
+                    bottomRight: Radius.circular(13.0),
+                    bottomLeft: Radius.circular(13.0),
+                    topLeft: Radius.circular(13.0),
+                    topRight: Radius.circular(13.0),
+                  ),
+                ),
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: Container(
+                        padding: const EdgeInsets.only(left: 16, right: 16),
+                        child: TextFormField(
+                          style: TextStyle(
+                            fontFamily: 'WorkSans',
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: DesignCourseAppTheme.nearlyBlue,
+                          ),
+                          keyboardType: TextInputType.text,
+                          decoration: InputDecoration(
+                            labelText: 'Tìm kiếm khách hàng',
+                            border: InputBorder.none,
+                            helperStyle: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                              color: HexColor('#B9BABC'),
+                            ),
+                            labelStyle: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 16,
+                              letterSpacing: 0.2,
+                              color: HexColor('#B9BABC'),
+                            ),
+                          ),
+                          onEditingComplete: () {},
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 60,
+                      height: 60,
+                      child: Icon(Icons.search, color: HexColor('#B9BABC')),
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ),
+          const Expanded(
+            child: SizedBox(),
           )
         ],
       ),

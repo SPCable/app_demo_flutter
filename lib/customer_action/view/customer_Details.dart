@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:quan_ly_taiducfood/customer_action/view/history_customer.dart';
-
+import 'package:quan_ly_taiducfood/customer_action/models/customer.dart';
 import 'package:quan_ly_taiducfood/customer_action/view/update_customer.dart';
 import 'package:quan_ly_taiducfood/main.dart';
-import 'package:quan_ly_taiducfood/models/customer.dart';
 import 'package:quan_ly_taiducfood/order_action/View/Order/order_theme.dart';
 import 'package:quan_ly_taiducfood/statistical_action/theme/stat&cus_theme.dart';
 
@@ -17,23 +16,23 @@ class DetailsCustomer extends StatefulWidget {
 class _DetailscustomerScreen extends State<DetailsCustomer> {
   var customer = Customer();
   _DetailscustomerScreen(this.customer);
-  bool isLoading  =  false;
-  
+
+  // getAllCustomer() async {
+  //   var customers = await _customerService.readCustomer("1");
+  //   customers.forEach((customer) {
+  //     setState(() {
+  //       customer.idCustomer = customer['idCustomer'];
+  //       customer.name = customer['name'];
+  //       customer.phone = customer['phone'];
+  //       customer.email = customer['email'];
+  //       customer.address = customer['address'];
+  //     });
+  //   });
+  // }
 
   @override
   void initState() {
     super.initState();
-  }
-
-    _addCustomer() async {
-    setState(() {
-      isLoading = true;
-    });
-    customer.addCustomer(customer);
-    setState(() {
-      isLoading = false;
-      Navigator.pop(context);
-    });
   }
 
   @override
@@ -224,7 +223,7 @@ class _DetailscustomerScreen extends State<DetailsCustomer> {
                           child: Container(
                             padding: EdgeInsets.zero,
                             child: Text(
-                              customer.mail,
+                              customer.email,
                               style: TextStyle(
                                 fontFamily: 'WorkSans',
                                 fontWeight: FontWeight.bold,
@@ -330,7 +329,7 @@ class _DetailscustomerScreen extends State<DetailsCustomer> {
                                 Navigator.of(context).pushNamed(
                                   HistoryCustomer.routeName,
                                   arguments: {
-                                    'idCustomer': customer.id,
+                                    'idCustomer': customer.idCustomer,
                                   },
                                 );
                               },

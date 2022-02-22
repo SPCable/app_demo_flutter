@@ -1,12 +1,6 @@
 class ProductCate {
   String name;
-  String categoryId;
+  int id;
 
-  ProductCate({this.categoryId, this.name});
-
-  static List<ProductCate> listProductCate = <ProductCate>[
-    ProductCate(categoryId: "ap", name: "Apple"),
-    ProductCate(categoryId: "sm", name: "Samsung"),
-    ProductCate(categoryId: "xi", name: "Xiaomi"),
-  ];
+  ProductCate(this.id, this.name);
 }

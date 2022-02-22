@@ -1,17 +1,20 @@
+import 'dart:collection';
 import 'dart:ui';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
+
 import 'package:intl/intl.dart';
+
+import 'package:quan_ly_taiducfood/customer_action/view/customer_screen.dart';
 import 'package:quan_ly_taiducfood/customer_action/models/customer.dart';
 import 'package:quan_ly_taiducfood/customer_action/models/quan.dart';
-import 'package:quan_ly_taiducfood/helper/search_delegate.dart';
-import 'package:quan_ly_taiducfood/models/product.dart';
 import 'package:quan_ly_taiducfood/products_action/models/product_detail_data.dart';
 import 'package:quan_ly_taiducfood/order_action/Controller/CustomerController.dart';
 import 'package:quan_ly_taiducfood/order_action/Controller/OrderController.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:quan_ly_taiducfood/order_action/model/test.dart';
 import 'add_food.dart';
-import 'customer_list_widget.dart';
 import 'order_list_screen.dart';
 import 'order_theme.dart';
 import 'order_list_view.dart';
@@ -38,19 +41,25 @@ class _OrderScreenState extends State<OrderScreen>
   String nameCustomer = "Thêm khách hàng";
   String idCustomer = "";
 
-  var product = Product();
+  var sanpham = Sanpham();
   var customer = Customer();
   var _orderService = OrderService();
   var _customerService = CustomerService();
 
-  List<Product> orderList = [];
+  // ignore: deprecated_member_use
+  List<Sanpham> orderList = List<Sanpham>();
+
   List<Quan> quanList = Quan.quanList;
+
   // ignore: deprecated_member_use
   List<Customer> customerList = List<Customer>();
 
   List<ProductDetail> productList = [];
+
   int paymethod = 0;
+
   double tongTienhang = 0;
+
   double tongTienVon = 0;
   double tong = 0;
   int tongSoluong = 0;
@@ -80,19 +89,19 @@ class _OrderScreenState extends State<OrderScreen>
 
   getAllOrderList() async {
     orderList.clear();
-    final orders = await _orderService.readOrderList();
+    var orders = await _orderService.readOrderList();
     orders.forEach((sanpham) {
       setState(() {
-        var product = new Product();
-        product.id = sanpham['id'];
-        product.name = sanpham['name'];
-        product.wholesalePrice = sanpham['wholesalePrice'];
-        product.price = sanpham['price'];
-        product.costPrice = sanpham['costPrice'];
-        product.importPrice = sanpham['importPrice'];
-        product.amout = sanpham['amout'];
-        product.count = sanpham['count'];
-        orderList.add(product);
+        var orderModel = new Sanpham();
+        orderModel.id = sanpham['id'].toString();
+        orderModel.name = sanpham['name'];
+        orderModel.brand = sanpham['brand'];
+        orderModel.price = sanpham['price'].toString();
+
+        orderModel.priceVon = sanpham['priceVon'].toString();
+        orderModel.priceBuon = sanpham['priceBuon'].toString();
+        orderModel.amout = sanpham['amout'];
+        orderList.add(orderModel);
       });
     });
     getTong();
@@ -137,8 +146,8 @@ class _OrderScreenState extends State<OrderScreen>
     tongTienVon = 0;
     orderList.forEach((element) {
       tongSoluong += element.count;
-      tong += double.parse(element.price.toString()) * element.count;
-      tongTienVon += double.parse(element.costPrice.toString()) * element.count;
+      tong += double.parse(element.price) * element.count;
+      tongTienVon += double.parse(element.priceVon) * element.count;
     });
 
     // if (chietKhau == 0) {
@@ -151,7 +160,55 @@ class _OrderScreenState extends State<OrderScreen>
   }
 
   // ignore: non_constant_identifier_names
-  Future<void> getDathang_GioHang() async {}
+  Future<void> getDathang_GioHang() async {
+    if (customer.idCustomer.isEmpty) {
+    } else {
+      DateTime now = DateTime.now();
+      DatabaseReference reference =
+          FirebaseDatabase.instance.reference().child('Order');
+      idDonHang = reference.push().key;
+      idGioHang = reference.push().key;
+      HashMap mapOrder = new HashMap();
+
+      mapOrder["idDonHang"] = idDonHang.toString();
+      mapOrder["idGioHang"] = idGioHang.toString();
+      mapOrder["tongTienhang"] = tongTienhang.toString();
+      mapOrder["tongSoluong"] = tongSoluong.toString();
+      mapOrder["phiGiaohang"] = phiGiaohang.toString();
+      mapOrder["chietKhau"] = chietKhau.toString();
+      mapOrder["banSiLe"] = giaban.toString();
+      mapOrder["paymethod"] = paymethod.toString();
+      mapOrder["idKhachHang"] = customer.idCustomer.toString();
+      mapOrder["ngaymua"] = DateFormat('dd/MM/yyyy').format(now).toString();
+      mapOrder["giomua"] = DateFormat('kk:mm:ss').format(now).toString();
+      mapOrder["datetime"] = now.toString();
+      mapOrder["tongGiaVon"] = tongTienVon.toString();
+      mapOrder["trangthai"] = "0";
+
+      reference.child(idDonHang).set(mapOrder);
+
+      ///////////////////////////////////////////////////////////
+
+      DatabaseReference referenceCart =
+          FirebaseDatabase.instance.reference().child('Cart');
+
+      for (var sanpham in orderList) {
+        String idSanpham = reference.push().key;
+        HashMap mapCart = new HashMap();
+        mapCart["idGioHang"] = idGioHang.toString();
+        mapCart["id"] = sanpham.id.toString();
+        mapCart["name"] = sanpham.name.toString();
+        mapCart["brand"] = sanpham.brand.toString();
+        mapCart["price"] = sanpham.price.toString();
+        mapCart["count"] = sanpham.count.toString();
+        mapCart["idKhachHang"] = customer.idCustomer.toString();
+        mapCart["priceVon"] = sanpham.priceVon.toString();
+        mapCart["priceBuon"] = sanpham.priceBuon.toString();
+        mapCart["amout"] = sanpham.amout.toString();
+        referenceCart.child(idGioHang).child(idSanpham).set(mapCart);
+      }
+    }
+  }
 
   // if (sanpham.id.isNotEmpty) {
   //   referenceProduct.child(sanpham.id)
@@ -260,7 +317,6 @@ class _OrderScreenState extends State<OrderScreen>
                                 },
                                 callback: () {
                                   setState(() {
-                                    _orderService.update(orderList[index]);
                                     getTong();
                                   });
                                 },
@@ -283,6 +339,60 @@ class _OrderScreenState extends State<OrderScreen>
       ),
     );
   }
+
+  // Widget getListUI() {
+  //   return Container(
+  //     decoration: BoxDecoration(
+  //       color: OrderAppTheme.buildLightTheme().backgroundColor,
+  //       boxShadow: <BoxShadow>[
+  //         BoxShadow(
+  //             color: Colors.grey.withOpacity(0.2),
+  //             offset: const Offset(0, -2),
+  //             blurRadius: 8.0),
+  //       ],
+  //     ),
+  //     child: Column(
+  //       children: <Widget>[
+  //         Container(
+  //           height: MediaQuery.of(context).size.height - 156 - 50,
+  //           child: FutureBuilder<bool>(
+  //             future: getData(),
+  //             builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+  //               if (!snapshot.hasData) {
+  //                 return const SizedBox();
+  //               } else {
+  //                 return ListView.builder(
+  //                   itemCount: orderList.length,
+  //                   scrollDirection: Axis.vertical,
+  //                   itemBuilder: (BuildContext context, int index) {
+  //                     final int count =
+  //                         orderList.length > 10 ? 10 : orderList.length;
+  //                     final Animation<double> animation =
+  //                         Tween<double>(begin: 0.0, end: 1.0).animate(
+  //                             CurvedAnimation(
+  //                                 parent: animationController,
+  //                                 curve: Interval((1 / count) * index, 1.0,
+  //                                     curve: Curves.fastOutSlowIn)));
+  //                     animationController.forward();
+
+  //                     return OrderListView(
+  //                       callback: () {
+  //                         getAllOrderList();
+  //                       },
+  //                       sanpham: orderList[index],
+  //                       animation: animation,
+  //                       animationController: animationController,
+  //                     );
+  //                   },
+  //                 );
+  //               }
+  //             },
+  //           ),
+  //         )
+  //       ],
+  //     ),
+  //   );
+  // }
 
   Widget getTimeDateUI() {
     int phiGiaohangInt = phiGiaohang.round();
@@ -507,9 +617,16 @@ class _OrderScreenState extends State<OrderScreen>
                     borderRadius: const BorderRadius.all(
                       Radius.circular(4.0),
                     ),
-                    onTap: () {
-    
-                      setState(() {});
+                    onTap: () async {
+                      final result = await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => CustomerScreen()),
+                      );
+
+                      setState(() {
+                        getInfoCustomer(int.parse(result));
+                      });
                     },
                     child: Padding(
                       padding: const EdgeInsets.only(
@@ -909,8 +1026,6 @@ class _OrderScreenState extends State<OrderScreen>
         context: context,
         builder: (context) {
           return AlertDialog(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(20.0))),
             title: Text(
               "Chiết khấu (%)",
               textAlign: TextAlign.center,
@@ -930,15 +1045,7 @@ class _OrderScreenState extends State<OrderScreen>
                     },
                     keyboardType: TextInputType.number,
                     textAlign: TextAlign.center,
-                    cursorHeight: 17,
-                    decoration: new InputDecoration(
-                      border: InputBorder.none,
-                      focusedBorder: InputBorder.none,
-                      enabledBorder: InputBorder.none,
-                      errorBorder: InputBorder.none,
-                      disabledBorder: InputBorder.none,
-                      hintText: "0",
-                    ),
+                    cursorHeight: 30,
                   ),
                   CupertinoDialogAction(
                     child: Container(
