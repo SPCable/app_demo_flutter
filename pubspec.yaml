@@ -29,7 +29,7 @@ dependencies:
 
   http: ^0.12.0+2
 
-  firebase_core: any
+  # firebase_core: any
 
   flutter_image: ^3.0.0
 
@@ -39,7 +39,7 @@ dependencies:
 
   firebase_storage : any
 
-  firebase_analytics: ^5.0.6
+  # firebase_analytics: any
 
   fluttertoast: ^7.1.5
 
