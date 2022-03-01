@@ -1,9 +1,7 @@
-import 'package:firebase_database/firebase_database.dart';
 import 'package:quan_ly_taiducfood/main_action/theme/home_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:quan_ly_taiducfood/order_action/View/Order/order_list_screen.dart';
 
-final db = FirebaseDatabase.instance.reference().child("productList");
 
 class OrderStatus extends StatelessWidget {
   const OrderStatus(

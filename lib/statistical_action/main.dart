@@ -1,4 +1,3 @@
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:quan_ly_taiducfood/main.dart';
@@ -41,39 +40,6 @@ class _MainScreen extends State<MainScreen> {
     double test = 0;
 
     for (int i = 1; i < 10; i++) {
-      DatabaseReference referenceProduct = FirebaseDatabase.instance
-          .reference()
-          .child('productList')
-          .child(i.toString())
-          .child('Product');
-
-      referenceProduct.once().then((DataSnapshot snapshot) {
-        productDetailList.clear();
-        var keys = snapshot.value.keys;
-        var values = snapshot.value;
-
-        for (var key in keys) {
-          ProductDetail productDetail = new ProductDetail(
-            values[key]["id"],
-            values[key]["brand"],
-            values[key]["name"],
-            values[key]["image"],
-            values[key]["price"],
-            values[key]["barcode"],
-            values[key]["weight"],
-            values[key]["cate"],
-            values[key]["priceNhap"],
-            values[key]["priceBuon"],
-            values[key]["amount"],
-            values[key]["desc"],
-            values[key]["allowSale"].toString(),
-            values[key]["tax"].toString(),
-            values[key]["priceVon"],
-            values[key]["ngayUp"],
-            values[key]["daban"],
-          );
-          productDetailList.add(productDetail);
-        }
 
         for (var sp in productDetailList) {
           dem1 += double.parse(sp.amount).round();
@@ -118,7 +84,7 @@ class _MainScreen extends State<MainScreen> {
         print("tong1" + dem.toString());
         print("tong2" + dem2.toString());
         setState(() {});
-      });
+      
     }
   }
 

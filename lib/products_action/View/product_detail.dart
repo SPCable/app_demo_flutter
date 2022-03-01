@@ -1,7 +1,5 @@
 import 'dart:ui';
 
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
@@ -12,9 +10,6 @@ import 'package:quan_ly_taiducfood/products_action/models/product_detail_data.da
 import 'product_edit.dart';
 
 class ProductDetailScreen extends StatefulWidget {
-  const ProductDetailScreen({this.app, this.animationController});
-  final FirebaseApp app;
-  final AnimationController animationController;
   @override
   _ProductDetailScreenState createState() => _ProductDetailScreenState();
   static const routeName = '/product-detail';
@@ -54,41 +49,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
     final Map data = ModalRoute.of(context).settings.arguments;
     var productId = data['idMain'];
 
-    DatabaseReference referenceProduct = FirebaseDatabase.instance
-        .reference()
-        .child('productList')
-        .child(productId)
-        .child('Product');
-    referenceProduct.once().then((DataSnapshot snapshot) {
-      productDetailList.clear();
-      var keys = snapshot.value.keys;
-      var values = snapshot.value;
-
-      for (var key in keys) {
-        ProductDetail productDetail = new ProductDetail(
-          values[key]["id"],
-          values[key]["brand"],
-          values[key]["name"],
-          values[key]["image"],
-          values[key]["price"],
-          values[key]["barcode"],
-          values[key]["weight"],
-          values[key]["cate"],
-          values[key]["priceNhap"],
-          values[key]["priceBuon"],
-          values[key]["amount"],
-          values[key]["desc"],
-          values[key]["allowSale"].toString(),
-          values[key]["tax"].toString(),
-          values[key]["priceVon"],
-          values[key]["ngayUp"],
-          values[key]["daban"],
-        );
-        productDetailList.add(productDetail);
-      }
-      setState(() {
-        //
-      });
+    setState(() {
+      //
     });
   }
 
@@ -729,22 +691,14 @@ class _ProductDetailScreenState extends State<ProductDetailScreen>
     final Map data = ModalRoute.of(context).settings.arguments;
     final idFood = data['id'];
     final idFoodMain = data['idMain'];
-    DatabaseReference referenceList = FirebaseDatabase.instance
-        .reference()
-        .child('productList')
-        .child(idFoodMain)
-        .child('Product');
 
-    referenceList.child(idFood).remove();
   }
 
   Future<void> deleteSearchList() async {
     final Map data = ModalRoute.of(context).settings.arguments;
     final idFood = data['id'];
-    DatabaseReference referenceList =
-        FirebaseDatabase.instance.reference().child('SearchList');
 
-    referenceList.child(idFood).remove();
+
   }
 
   // Future<void> edit() async {

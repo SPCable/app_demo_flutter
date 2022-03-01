@@ -45,7 +45,19 @@ class MyApp extends StatelessWidget {
           textTheme: AppTheme.textTheme,
           platform: TargetPlatform.iOS,
         ),
-        home: HomeWidget(),
+        home: Scaffold(
+          drawer: Drawer(
+            child: Container(
+              child: Column(
+                children: [
+                  myDrawerHeader(),
+                  myDrawerBody(),
+                ],
+              ),
+            ),
+          ),
+          body: HomeWidget(),
+        ),
         routes: {
           ProductDetailScreen.routeName: (ctxPD) => ProductDetailScreen(),
           ProductEdit.routeName: (ctxPE) => ProductEdit(),
@@ -60,6 +72,111 @@ class MyApp extends StatelessWidget {
           DonhangInADay2.routeName: (ctxDIADB) => DonhangInADay2(),
         });
   }
+}
+
+Widget myDrawerBody() {
+  return Container(
+      color: HexColor("001D33"),
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 8.0),
+        child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              CircleAvatar(
+                backgroundColor: Colors.transparent,
+                child: Icon(
+                  Icons.account_circle_sharp,
+                  size: 50,
+                  color: Colors.white54,
+                ),
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [],
+                  ),
+                  IconButton(
+                    onPressed: () {},
+                    icon: Icon(
+                      Icons.logout_outlined,
+                      color: Colors.white,
+                      size: 32,
+                    ),
+                  )
+                ],
+              ),
+            ]),
+      ));
+}
+
+Widget myDrawerHeader() {
+  var fontStyle = TextStyle(color: Colors.white, fontSize: 16);
+  var fontStyle1 = TextStyle(color: Colors.white54, fontSize: 14);
+  return Container(
+    color: Colors.green,
+    padding: EdgeInsets.only(top: 64),
+    child: Padding(
+      padding: const EdgeInsets.only(bottom: 8.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          CircleAvatar(
+            backgroundColor: Colors.transparent,
+            child: Icon(
+              Icons.account_circle_sharp,
+              size: 50,
+              color: Colors.white54,
+            ),
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    "Cao Thi Niem",
+                    style: fontStyle,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 8),
+                    child: Icon(
+                      Icons.edit_outlined,
+                      color: Colors.white,
+                      size: 28,
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 5,
+              ),
+              Text(
+                "Thuong.009C104217",
+                style: fontStyle1,
+              ),
+            ],
+          ),
+          IconButton(
+            onPressed: () {},
+            icon: Icon(
+              Icons.logout_outlined,
+              color: Colors.white,
+              size: 32,
+            ),
+          )
+        ],
+      ),
+    ),
+  );
 }
 
 class HexColor extends Color {

@@ -1,4 +1,3 @@
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:quan_ly_taiducfood/order_action/model/order_list.dart';
@@ -55,31 +54,7 @@ class _BaoCaoDoanhThuScreenState extends State<BaoCaoDoanhThuScreen>
   }
 
   getdata() {
-    DatabaseReference referenceProduct =
-        FirebaseDatabase.instance.reference().child("Order");
-    referenceProduct.once().then((DataSnapshot snapshot) {
-      orderList.clear();
-      var keys = snapshot.value.keys;
-      var values = snapshot.value;
-      for (var key in keys) {
-        OrderList order = new OrderList(
-          values[key]["idDonHang"],
-          values[key]["idGioHang"],
-          values[key]["tongTienhang"],
-          values[key]["tongSoluong"],
-          values[key]["phiGiaohang"],
-          values[key]["chietKhau"],
-          values[key]["banSiLe"],
-          values[key]["paymethod"],
-          values[key]["idKhachHang"],
-          values[key]["ngaymua"],
-          values[key]["trangthai"],
-          values[key]["giomua"],
-          values[key]["tongGiaVon"],
-          values[key]["datetime"],
-        );
-        orderList.add(order);
-      }
+   
       for (int i = 0; i < 32; i++) {
         _date =
             DateTime.utc(startTime.year, startTime.month, startTime.day + i);
@@ -113,7 +88,7 @@ class _BaoCaoDoanhThuScreenState extends State<BaoCaoDoanhThuScreen>
       }
 
       setState(() {});
-    });
+    
   }
 
   @override

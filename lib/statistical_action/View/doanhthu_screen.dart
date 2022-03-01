@@ -1,4 +1,3 @@
-import 'package:firebase_database/firebase_database.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -56,89 +55,7 @@ class _DoanhthuScreen extends State<DoanhthuScreen> {
   }
 
   getData() {
-    tong = 0;
-    day = 0;
-    tong7ngay = 0.0;
-
-    DatabaseReference referenceProduct =
-        FirebaseDatabase.instance.reference().child("Order");
-    referenceProduct.once().then(
-      (DataSnapshot snapshot) {
-        orderList.clear();
-        var keys = snapshot.value.keys;
-        var values = snapshot.value;
-        for (var key in keys) {
-          OrderList order = new OrderList(
-            values[key]["idDonHang"],
-            values[key]["idGioHang"],
-            values[key]["tongTienhang"],
-            values[key]["tongSoluong"],
-            values[key]["phiGiaohang"],
-            values[key]["chietKhau"],
-            values[key]["banSiLe"],
-            values[key]["paymethod"],
-            values[key]["idKhachHang"],
-            values[key]["ngaymua"],
-            values[key]["trangthai"],
-            values[key]["giomua"],
-            values[key]["tongGiaVon"],
-            values[key]["datetime"],
-          );
-          orderList.add(order);
-        }
-        for (int i = 0; i < 7; i++) {
-          tong = 0;
-          day = 0;
-          _dateTime = DateTime.utc(now.year, now.month, now.day - i);
-          for (var sp in orderList) {
-            if (sp.ngaymua == DateFormat("dd/MM/yyyy").format(_dateTime) &&
-                sp.trangthai == "4") {
-              tong += double.parse(sp.tongTienhang);
-              if (a < tong) {
-                a = tong;
-              }
-            }
-          }
-          day = tong;
-          tong7ngay += day;
-
-          if (i == 6) {
-            barGroup1 = makeGroupData(0, day);
-          }
-          if (i == 5) {
-            barGroup2 = makeGroupData(1, day);
-          }
-          if (i == 4) {
-            barGroup3 = makeGroupData(2, day);
-          }
-          if (i == 3) {
-            barGroup4 = makeGroupData(3, day);
-          }
-          if (i == 2) {
-            barGroup5 = makeGroupData(4, day);
-          }
-          if (i == 1) {
-            barGroup6 = makeGroupData(5, day);
-          }
-          if (i == 0) {
-            barGroup7 = makeGroupData(6, day);
-          }
-          items = [
-            barGroup1,
-            barGroup2,
-            barGroup3,
-            barGroup4,
-            barGroup5,
-            barGroup6,
-            barGroup7,
-          ];
-          rawBarGroups = items;
-
-          showingBarGroups = rawBarGroups;
-          setState(() {});
-        }
-      },
-    );
+   
   }
 
   Future<Null> refreshList() async {

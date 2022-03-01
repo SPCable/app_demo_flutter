@@ -1,6 +1,5 @@
 import 'dart:collection';
 import 'dart:ui';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 
 import 'package:intl/intl.dart';
@@ -164,10 +163,7 @@ class _OrderScreenState extends State<OrderScreen>
     if (customer.idCustomer.isEmpty) {
     } else {
       DateTime now = DateTime.now();
-      DatabaseReference reference =
-          FirebaseDatabase.instance.reference().child('Order');
-      idDonHang = reference.push().key;
-      idGioHang = reference.push().key;
+
       HashMap mapOrder = new HashMap();
 
       mapOrder["idDonHang"] = idDonHang.toString();
@@ -185,28 +181,7 @@ class _OrderScreenState extends State<OrderScreen>
       mapOrder["tongGiaVon"] = tongTienVon.toString();
       mapOrder["trangthai"] = "0";
 
-      reference.child(idDonHang).set(mapOrder);
-
-      ///////////////////////////////////////////////////////////
-
-      DatabaseReference referenceCart =
-          FirebaseDatabase.instance.reference().child('Cart');
-
-      for (var sanpham in orderList) {
-        String idSanpham = reference.push().key;
-        HashMap mapCart = new HashMap();
-        mapCart["idGioHang"] = idGioHang.toString();
-        mapCart["id"] = sanpham.id.toString();
-        mapCart["name"] = sanpham.name.toString();
-        mapCart["brand"] = sanpham.brand.toString();
-        mapCart["price"] = sanpham.price.toString();
-        mapCart["count"] = sanpham.count.toString();
-        mapCart["idKhachHang"] = customer.idCustomer.toString();
-        mapCart["priceVon"] = sanpham.priceVon.toString();
-        mapCart["priceBuon"] = sanpham.priceBuon.toString();
-        mapCart["amout"] = sanpham.amout.toString();
-        referenceCart.child(idGioHang).child(idSanpham).set(mapCart);
-      }
+      for (var sanpham in orderList) {}
     }
   }
 

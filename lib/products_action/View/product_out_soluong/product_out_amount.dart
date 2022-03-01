@@ -1,4 +1,3 @@
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:quan_ly_taiducfood/products_action/models/product_detail_data.dart';
@@ -58,38 +57,11 @@ class _ProductOutAmountState extends State<ProductOutAmount>
   getLocgiatri(int a) {
     for (int i = 1; i < 10; i++) {
       productSearchList2.clear();
-      DatabaseReference referenceProduct = FirebaseDatabase.instance
-          .reference()
-          .child('productList')
-          .child(i.toString())
-          .child('Product');
 
-      referenceProduct.once().then((DataSnapshot snapshot) {
-        var keys = snapshot.value.keys;
-        var values = snapshot.value;
 
-        for (var key in keys) {
-          ProductDetail productDetail = new ProductDetail(
-            values[key]["id"],
-            values[key]["brand"],
-            values[key]["name"],
-            values[key]["image"],
-            values[key]["price"],
-            values[key]["barcode"],
-            values[key]["weight"],
-            values[key]["cate"],
-            values[key]["priceNhap"],
-            values[key]["priceBuon"],
-            values[key]["amount"],
-            values[key]["desc"],
-            values[key]["allowSale"].toString(),
-            values[key]["tax"].toString(),
-            values[key]["priceVon"],
-            values[key]["ngayUp"],
-            values[key]["daban"],
-          );
-          productSearchList2.add(productDetail);
-        }
+        
+
+
         sanphamhethang = 0;
         sanphammoi = 0;
         sanphamnhieuhang = 0;
@@ -160,7 +132,7 @@ class _ProductOutAmountState extends State<ProductOutAmount>
           }
         }
         setState(() {});
-      });
+
     }
   }
 

@@ -1,4 +1,3 @@
-import 'package:firebase_database/firebase_database.dart';
 import 'package:intl/intl.dart';
 import 'package:quan_ly_taiducfood/main_action/widget/order_status.dart';
 import 'package:quan_ly_taiducfood/main_action/widget/sub_statistical.dart';
@@ -53,72 +52,46 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     var dateAfter = DateTime.now();
     var dateBefore = DateTime.utc(DateTime.now().year, DateTime.now().month, 1);
     var _date = dateAfter.difference(dateBefore).inDays;
-    DatabaseReference referenceProduct =
-        FirebaseDatabase.instance.reference().child("Order");
-    referenceProduct.once().then((DataSnapshot snapshot) {
-      _list.clear();
-      var keys = snapshot.value.keys;
-      var values = snapshot.value;
-      for (var key in keys) {
-        OrderList order = new OrderList(
-          values[key]["idDonHang"],
-          values[key]["idGioHang"],
-          values[key]["tongTienhang"],
-          values[key]["tongSoluong"],
-          values[key]["phiGiaohang"],
-          values[key]["chietKhau"],
-          values[key]["banSiLe"],
-          values[key]["paymethod"],
-          values[key]["idKhachHang"],
-          values[key]["ngaymua"],
-          values[key]["trangthai"],
-          values[key]["giomua"],
-          values[key]["tongGiaVon"],
-          values[key]["datetime"],
-        );
-        _list.add(order);
-      }
 
+    for (var don in _list) {
+      if (dateNow == don.ngaymua && int.parse(don.trangthai) < 4) {
+        donhang++;
+      }
+      if (dateNow == don.ngaymua && don.trangthai == "4") {
+        doanhthungay += double.parse(don.tongTienhang);
+      }
+      if (don.trangthai == "0") {
+        chuaduyet++;
+      } else if (don.trangthai == "1") {
+        choxuatkhoa++;
+      } else if (don.trangthai == "2") {
+        danggiaohang++;
+      } else if (don.trangthai == "3") {
+        chothanhtoan++;
+      }
+    }
+
+    for (int i = 0; i <= _date; i++) {
+      _dateTime =
+          DateTime.utc(dateBefore.year, dateBefore.month, dateBefore.day + i);
       for (var don in _list) {
-        if (dateNow == don.ngaymua && int.parse(don.trangthai) < 4) {
-          donhang++;
-        }
-        if (dateNow == don.ngaymua && don.trangthai == "4") {
-          doanhthungay += double.parse(don.tongTienhang);
-        }
-        if (don.trangthai == "0") {
-          chuaduyet++;
-        } else if (don.trangthai == "1") {
-          choxuatkhoa++;
-        } else if (don.trangthai == "2") {
-          danggiaohang++;
-        } else if (don.trangthai == "3") {
-          chothanhtoan++;
-        }
-      }
-
-      for (int i = 0; i <= _date; i++) {
-        _dateTime =
-            DateTime.utc(dateBefore.year, dateBefore.month, dateBefore.day + i);
-        for (var don in _list) {
-          if (don.ngaymua == DateFormat("dd/MM/yyyy").format(_dateTime) &&
-              don.tongTienhang != "0.0") {
-            if (don.trangthai == "6") {
-              donhuy++;
-            }
-            if (don.trangthai == "5") {
-              dontra++;
-            }
-            if (don.trangthai == "4") {
-              doanhthuthang += double.parse(don.tongTienhang);
-            }
+        if (don.ngaymua == DateFormat("dd/MM/yyyy").format(_dateTime) &&
+            don.tongTienhang != "0.0") {
+          if (don.trangthai == "6") {
+            donhuy++;
+          }
+          if (don.trangthai == "5") {
+            dontra++;
+          }
+          if (don.trangthai == "4") {
+            doanhthuthang += double.parse(don.tongTienhang);
           }
         }
       }
+    }
 
-      setState(() {
-        addAllListData();
-      });
+    setState(() {
+      addAllListData();
     });
   }
 

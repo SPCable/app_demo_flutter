@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
@@ -14,9 +12,6 @@ import 'product_detail.dart';
 import 'product_out_soluong/product_out_amount.dart';
 
 class ProductSearchScreen extends StatefulWidget {
-  const ProductSearchScreen({this.app, this.animationController});
-  final FirebaseApp app;
-  final AnimationController animationController;
   @override
   _ProductSearchScreenState createState() => _ProductSearchScreenState();
   static const routeName = '/product-search';
@@ -58,291 +53,216 @@ class _ProductSearchScreenState extends State<ProductSearchScreen>
   }
 
   getData() {
-    DatabaseReference referenceProduct =
-        FirebaseDatabase.instance.reference().child("SearchList");
-    referenceProduct.once().then((DataSnapshot snapshot) {
-      productSearchList.clear();
-      var keys = snapshot.value.keys;
-      var values = snapshot.value;
-
-      for (var key in keys) {
-        ProductSearch product = new ProductSearch(
-          values[key]["id"],
-          values[key]["idMain"],
-          values[key]["name"],
-          values[key]["image"],
-          values[key]["price"],
-          values[key]["dateUp"],
-        );
-        productSearchList.add(product);
-        productSearchList.sort((a, b) {
-          DateTime adate = DateTime.parse(a.dateUp);
-          DateTime bdate = DateTime.parse(b.dateUp);
-          return bdate.compareTo(adate);
-        });
-      }
-      setState(() {
-        //
-      });
+    setState(() {
+      //
     });
   }
 
   getLocgiatri() {
     for (int i = 1; i < 10; i++) {
-      DatabaseReference referenceProduct = FirebaseDatabase.instance
-          .reference()
-          .child('productList')
-          .child(i.toString())
-          .child('Product');
-
-      referenceProduct.once().then((DataSnapshot snapshot) {
-        var keys = snapshot.value.keys;
-        var values = snapshot.value;
-
-        for (var key in keys) {
-          ProductDetail productDetail = new ProductDetail(
-            values[key]["id"],
-            values[key]["brand"],
-            values[key]["name"],
-            values[key]["image"],
-            values[key]["price"],
-            values[key]["barcode"],
-            values[key]["weight"],
-            values[key]["cate"],
-            values[key]["priceNhap"],
-            values[key]["priceBuon"],
-            values[key]["amount"],
-            values[key]["desc"],
-            values[key]["allowSale"].toString(),
-            values[key]["tax"].toString(),
-            values[key]["priceVon"],
-            values[key]["ngayUp"],
-            values[key]["daban"],
-          );
-          productSearchList2.add(productDetail);
+      slHet = 0;
+      productSearchList3.clear();
+      for (var sp in productSearchList2) {
+        if (int.parse(sp.amount) <= 3) {
+          slHet++;
         }
-        slHet = 0;
-        productSearchList3.clear();
-        for (var sp in productSearchList2) {
-          if (int.parse(sp.amount) <= 3) {
+      }
+      String m = "";
+      for (var sp in productSearchList2) {
+        m = "";
+        for (int i = 0; i <= 31; i++) {
+          _dateTime =
+              DateTime.utc(startDate.year, startDate.month, startDate.day + i);
+
+          if (sp.ngayUp == DateFormat("dd/MM/yyyy").format(_dateTime)) {
+            m = sp.ngayUp;
+            break;
+          }
+        }
+        if (m == "") {
+          if (int.parse(sp.amount) >= 10) {
             slHet++;
           }
         }
-        String m = "";
-        for (var sp in productSearchList2) {
-          m = "";
-          for (int i = 0; i <= 31; i++) {
-            _dateTime = DateTime.utc(
-                startDate.year, startDate.month, startDate.day + i);
+      }
+      for (var sp in productSearchList2) {
+        for (int i = 0; i <= 8; i++) {
+          _dateTime =
+              DateTime.utc(startDate.year, startDate.month, startDate.day + i);
 
-            if (sp.ngayUp == DateFormat("dd/MM/yyyy").format(_dateTime)) {
-              m = sp.ngayUp;
-              break;
-            }
-          }
-          if (m == "") {
-            if (int.parse(sp.amount) >= 10) {
-              slHet++;
-            }
+          if (sp.ngayUp == DateFormat("dd/MM/yyyy").format(_dateTime)) {
+            slHet++;
           }
         }
-        for (var sp in productSearchList2) {
-          for (int i = 0; i <= 8; i++) {
-            _dateTime = DateTime.utc(
-                startDate.year, startDate.month, startDate.day + i);
+      }
 
-            if (sp.ngayUp == DateFormat("dd/MM/yyyy").format(_dateTime)) {
-              slHet++;
-            }
-          }
-        }
-
-        setState(() {});
-      });
+      setState(() {});
     }
   }
 
   getLocList(int i) {
-    DatabaseReference referenceProduct =
-        FirebaseDatabase.instance.reference().child("SearchList");
-    referenceProduct.once().then((DataSnapshot snapshot) {
+    productSearchList.clear();
+    productSearchListSort.clear();
+
+    // productSearchList.sort((a, b) {
+    //   DateTime adate = DateTime.parse(a.dateUp);
+    //   DateTime bdate = DateTime.parse(b.dateUp);
+    //   return bdate.compareTo(adate);
+    // });
+
+    if (i == 1) {
       productSearchList.clear();
-      productSearchListSort.clear();
-      var keys = snapshot.value.keys;
-      var values = snapshot.value;
-
-      for (var key in keys) {
-        ProductSearch product = new ProductSearch(
-          values[key]["id"],
-          values[key]["idMain"],
-          values[key]["name"],
-          values[key]["image"],
-          values[key]["price"],
-          values[key]["dateUp"],
-        );
-        productSearchList.add(product);
-        productSearchListSort.add(product);
-        // productSearchList.sort((a, b) {
-        //   DateTime adate = DateTime.parse(a.dateUp);
-        //   DateTime bdate = DateTime.parse(b.dateUp);
-        //   return bdate.compareTo(adate);
-        // });
+      productSearchListSort.sort((a, b) {
+        var adate = int.parse(a.price);
+        var bdate = int.parse(b.price);
+        return adate.compareTo(bdate);
+      });
+      for (var t in productSearchListSort) {
+        productSearchList.add(t);
+        print(t.price);
       }
+    } else if (i == 3) {
+      productSearchList.clear();
 
-      if (i == 1) {
-        productSearchList.clear();
-        productSearchListSort.sort((a, b) {
-          var adate = int.parse(a.price);
-          var bdate = int.parse(b.price);
-          return adate.compareTo(bdate);
-        });
-        for (var t in productSearchListSort) {
-          productSearchList.add(t);
-          print(t.price);
+      for (var sp in productSearchListSort) {
+        if (sp.idMain == "1") {
+          productSearchList.add(sp);
+          productSearchList.sort((a, b) {
+            DateTime adate = DateTime.parse(a.dateUp);
+            DateTime bdate = DateTime.parse(b.dateUp);
+            return bdate.compareTo(adate);
+          });
         }
-      } else if (i == 3) {
-        productSearchList.clear();
-
-        for (var sp in productSearchListSort) {
-          if (sp.idMain == "1") {
-            productSearchList.add(sp);
-            productSearchList.sort((a, b) {
-              DateTime adate = DateTime.parse(a.dateUp);
-              DateTime bdate = DateTime.parse(b.dateUp);
-              return bdate.compareTo(adate);
-            });
-          }
-        }
-      } else if (i == 2) {
-        productSearchList.clear();
-        productSearchListSort.sort((a, b) {
-          var adate = int.parse(a.price);
-          var bdate = int.parse(b.price);
-          return bdate.compareTo(adate);
-        });
-        for (var t in productSearchListSort) {
-          productSearchList.add(t);
-          print(t.price);
-        }
-      } else if (i == 4) {
-        productSearchList.clear();
-
-        for (var sp in productSearchListSort) {
-          if (sp.idMain == "2") {
-            productSearchList.add(sp);
-            productSearchList.sort((a, b) {
-              DateTime adate = DateTime.parse(a.dateUp);
-              DateTime bdate = DateTime.parse(b.dateUp);
-              return bdate.compareTo(adate);
-            });
-          }
-        }
-      } else if (i == 5) {
-        productSearchList.clear();
-
-        for (var sp in productSearchListSort) {
-          if (sp.idMain == "3") {
-            productSearchList.add(sp);
-            productSearchList.sort((a, b) {
-              DateTime adate = DateTime.parse(a.dateUp);
-              DateTime bdate = DateTime.parse(b.dateUp);
-              return bdate.compareTo(adate);
-            });
-          }
-        }
-      } else if (i == 6) {
-        productSearchList.clear();
-
-        for (var sp in productSearchListSort) {
-          if (sp.idMain == "4") {
-            productSearchList.add(sp);
-            productSearchList.sort((a, b) {
-              DateTime adate = DateTime.parse(a.dateUp);
-              DateTime bdate = DateTime.parse(b.dateUp);
-              return bdate.compareTo(adate);
-            });
-          }
-        }
-      } else if (i == 7) {
-        productSearchList.clear();
-
-        for (var sp in productSearchListSort) {
-          if (sp.idMain == "5") {
-            productSearchList.add(sp);
-            productSearchList.sort((a, b) {
-              DateTime adate = DateTime.parse(a.dateUp);
-              DateTime bdate = DateTime.parse(b.dateUp);
-              return bdate.compareTo(adate);
-            });
-          }
-        }
-      } else if (i == 8) {
-        productSearchList.clear();
-
-        for (var sp in productSearchListSort) {
-          if (sp.idMain == "6") {
-            productSearchList.add(sp);
-            productSearchList.sort((a, b) {
-              DateTime adate = DateTime.parse(a.dateUp);
-              DateTime bdate = DateTime.parse(b.dateUp);
-              return bdate.compareTo(adate);
-            });
-          }
-        }
-      } else if (i == 9) {
-        productSearchList.clear();
-
-        for (var sp in productSearchListSort) {
-          if (sp.idMain == "7") {
-            productSearchList.add(sp);
-            productSearchList.sort((a, b) {
-              DateTime adate = DateTime.parse(a.dateUp);
-              DateTime bdate = DateTime.parse(b.dateUp);
-              return bdate.compareTo(adate);
-            });
-          }
-        }
-      } else if (i == 10) {
-        productSearchList.clear();
-
-        for (var sp in productSearchListSort) {
-          if (sp.idMain == "8") {
-            productSearchList.add(sp);
-            productSearchList.sort((a, b) {
-              DateTime adate = DateTime.parse(a.dateUp);
-              DateTime bdate = DateTime.parse(b.dateUp);
-              return bdate.compareTo(adate);
-            });
-          }
-        }
-      } else if (i == 11) {
-        productSearchList.clear();
-
-        for (var sp in productSearchListSort) {
-          if (sp.idMain == "9") {
-            productSearchList.add(sp);
-            productSearchList.sort((a, b) {
-              DateTime adate = DateTime.parse(a.dateUp);
-              DateTime bdate = DateTime.parse(b.dateUp);
-              return bdate.compareTo(adate);
-            });
-          }
-        }
-      } else if (i == 12) {
-        productSearchList.sort((a, b) {
-          DateTime adate = DateTime.parse(a.dateUp);
-          DateTime bdate = DateTime.parse(b.dateUp);
-          return bdate.compareTo(adate);
-        });
-      } else if (i == 13) {
-        productSearchList.sort((a, b) {
-          DateTime adate = DateTime.parse(a.dateUp);
-          DateTime bdate = DateTime.parse(b.dateUp);
-          return adate.compareTo(bdate);
-        });
       }
-      setState(() {});
-    });
+    } else if (i == 2) {
+      productSearchList.clear();
+      productSearchListSort.sort((a, b) {
+        var adate = int.parse(a.price);
+        var bdate = int.parse(b.price);
+        return bdate.compareTo(adate);
+      });
+      for (var t in productSearchListSort) {
+        productSearchList.add(t);
+        print(t.price);
+      }
+    } else if (i == 4) {
+      productSearchList.clear();
+
+      for (var sp in productSearchListSort) {
+        if (sp.idMain == "2") {
+          productSearchList.add(sp);
+          productSearchList.sort((a, b) {
+            DateTime adate = DateTime.parse(a.dateUp);
+            DateTime bdate = DateTime.parse(b.dateUp);
+            return bdate.compareTo(adate);
+          });
+        }
+      }
+    } else if (i == 5) {
+      productSearchList.clear();
+
+      for (var sp in productSearchListSort) {
+        if (sp.idMain == "3") {
+          productSearchList.add(sp);
+          productSearchList.sort((a, b) {
+            DateTime adate = DateTime.parse(a.dateUp);
+            DateTime bdate = DateTime.parse(b.dateUp);
+            return bdate.compareTo(adate);
+          });
+        }
+      }
+    } else if (i == 6) {
+      productSearchList.clear();
+
+      for (var sp in productSearchListSort) {
+        if (sp.idMain == "4") {
+          productSearchList.add(sp);
+          productSearchList.sort((a, b) {
+            DateTime adate = DateTime.parse(a.dateUp);
+            DateTime bdate = DateTime.parse(b.dateUp);
+            return bdate.compareTo(adate);
+          });
+        }
+      }
+    } else if (i == 7) {
+      productSearchList.clear();
+
+      for (var sp in productSearchListSort) {
+        if (sp.idMain == "5") {
+          productSearchList.add(sp);
+          productSearchList.sort((a, b) {
+            DateTime adate = DateTime.parse(a.dateUp);
+            DateTime bdate = DateTime.parse(b.dateUp);
+            return bdate.compareTo(adate);
+          });
+        }
+      }
+    } else if (i == 8) {
+      productSearchList.clear();
+
+      for (var sp in productSearchListSort) {
+        if (sp.idMain == "6") {
+          productSearchList.add(sp);
+          productSearchList.sort((a, b) {
+            DateTime adate = DateTime.parse(a.dateUp);
+            DateTime bdate = DateTime.parse(b.dateUp);
+            return bdate.compareTo(adate);
+          });
+        }
+      }
+    } else if (i == 9) {
+      productSearchList.clear();
+
+      for (var sp in productSearchListSort) {
+        if (sp.idMain == "7") {
+          productSearchList.add(sp);
+          productSearchList.sort((a, b) {
+            DateTime adate = DateTime.parse(a.dateUp);
+            DateTime bdate = DateTime.parse(b.dateUp);
+            return bdate.compareTo(adate);
+          });
+        }
+      }
+    } else if (i == 10) {
+      productSearchList.clear();
+
+      for (var sp in productSearchListSort) {
+        if (sp.idMain == "8") {
+          productSearchList.add(sp);
+          productSearchList.sort((a, b) {
+            DateTime adate = DateTime.parse(a.dateUp);
+            DateTime bdate = DateTime.parse(b.dateUp);
+            return bdate.compareTo(adate);
+          });
+        }
+      }
+    } else if (i == 11) {
+      productSearchList.clear();
+
+      for (var sp in productSearchListSort) {
+        if (sp.idMain == "9") {
+          productSearchList.add(sp);
+          productSearchList.sort((a, b) {
+            DateTime adate = DateTime.parse(a.dateUp);
+            DateTime bdate = DateTime.parse(b.dateUp);
+            return bdate.compareTo(adate);
+          });
+        }
+      }
+    } else if (i == 12) {
+      productSearchList.sort((a, b) {
+        DateTime adate = DateTime.parse(a.dateUp);
+        DateTime bdate = DateTime.parse(b.dateUp);
+        return bdate.compareTo(adate);
+      });
+    } else if (i == 13) {
+      productSearchList.sort((a, b) {
+        DateTime adate = DateTime.parse(a.dateUp);
+        DateTime bdate = DateTime.parse(b.dateUp);
+        return adate.compareTo(bdate);
+      });
+    }
+    setState(() {});
   }
 
   @override
@@ -787,35 +707,9 @@ class _ProductSearchScreenState extends State<ProductSearchScreen>
 
   // ignore: non_constant_identifier_names
   void Search(String text) {
-    DatabaseReference searchRef =
-        FirebaseDatabase.instance.reference().child("SearchList");
-    searchRef.once().then((DataSnapshot snapshot) {
-      productSearchList.clear();
-      var keys = snapshot.value.keys;
-      var values = snapshot.value;
-
-      for (var key in keys) {
-        ProductSearch product = new ProductSearch(
-          values[key]["id"],
-          values[key]["idMain"],
-          values[key]["name"],
-          values[key]["image"],
-          values[key]["price"],
-          values[key]["dateUp"],
-        );
-        if (product.name.toLowerCase().contains(text)) {
-          productSearchList.add(product);
-          productSearchList.sort((a, b) {
-            DateTime adate = DateTime.parse(a.dateUp);
-            DateTime bdate = DateTime.parse(b.dateUp);
-            return bdate.compareTo(adate);
-          });
-        }
-      }
-      Timer(Duration(seconds: 1), () {
-        setState(() {
-          //
-        });
+    Timer(Duration(seconds: 1), () {
+      setState(() {
+        //
       });
     });
   }

@@ -1,5 +1,4 @@
 import 'dart:ui';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
@@ -125,136 +124,44 @@ class _OrderDetailScreenState extends State<OrderDetailScreen>
   updateDaban() {
     final Map data = ModalRoute.of(context).settings.arguments;
     String idgiohang = data['idGioHang'].toString();
-    DatabaseReference referenceProduct =
-        FirebaseDatabase.instance.reference().child("Cart").child(idgiohang);
-    referenceProduct.once().then((DataSnapshot snapshot) {
-      orderList.clear();
-      var keys = snapshot.value.keys;
-      var values = snapshot.value;
-      for (var key in keys) {
-        Sanpham sanpham = new Sanpham(
-          id: values[key]["id"],
-          name: values[key]["name"],
-          price: values[key]["price"],
-          count: int.parse(values[key]["count"]),
-        );
-        orderList.add(sanpham);
-      }
 
-      for (var sanpham in orderList) {
-        for (int i = 0; i < 10; i++) {
-          DatabaseReference referenceProduct = FirebaseDatabase.instance
-              .reference()
-              .child('productList')
-              .child(i.toString())
-              .child('Product');
-          referenceProduct.once().then((DataSnapshot snapshot) {
-            productList.clear();
-            var keys = snapshot.value.keys;
-            var values = snapshot.value;
+    orderList.clear();
 
-            for (var key in keys) {
-              ProductDetail productDetail = new ProductDetail(
-                values[key]["id"],
-                values[key]["brand"],
-                values[key]["name"],
-                values[key]["image"],
-                values[key]["price"],
-                values[key]["barcode"],
-                values[key]["weight"],
-                values[key]["cate"],
-                values[key]["priceNhap"],
-                values[key]["priceBuon"],
-                values[key]["amount"],
-                values[key]["desc"],
-                values[key]["allowSale"].toString(),
-                values[key]["tax"].toString(),
-                values[key]["priceVon"],
-                values[key]["ngayUp"],
-                values[key]["daban"],
-              );
-              productList.add(productDetail);
-            }
-            for (var a in productList) {
-              if (sanpham.id == a.id) {
-                referenceProduct.child(a.id).update({
-                  'amount': (sanpham.amout - sanpham.count).toString(),
-                  'daban': sanpham.count.toString()
-                });
-              }
-            }
-          });
+    for (var sanpham in orderList) {
+      for (int i = 0; i < 10; i++) {
+        productList.clear();
+
+        for (var a in productList) {
+          if (sanpham.id == a.id) {}
         }
       }
-    });
+    }
   }
 
   updateTraHang() {
     final Map data = ModalRoute.of(context).settings.arguments;
     String idgiohang = data['idGioHang'].toString();
-    DatabaseReference referenceProduct =
-        FirebaseDatabase.instance.reference().child("Cart").child(idgiohang);
-    referenceProduct.once().then((DataSnapshot snapshot) {
+
       orderList.clear();
-      var keys = snapshot.value.keys;
-      var values = snapshot.value;
-      for (var key in keys) {
-        Sanpham sanpham = new Sanpham(
-          id: values[key]["id"],
-          name: values[key]["name"],
-          price: values[key]["price"],
-          count: int.parse(values[key]["count"]),
-        );
-        orderList.add(sanpham);
-      }
+
+    
 
       for (var sanpham in orderList) {
         for (int i = 0; i < 10; i++) {
-          DatabaseReference referenceProduct = FirebaseDatabase.instance
-              .reference()
-              .child('productList')
-              .child(i.toString())
-              .child('Product');
-          referenceProduct.once().then((DataSnapshot snapshot) {
-            productList.clear();
-            var keys = snapshot.value.keys;
-            var values = snapshot.value;
 
-            for (var key in keys) {
-              ProductDetail productDetail = new ProductDetail(
-                values[key]["id"],
-                values[key]["brand"],
-                values[key]["name"],
-                values[key]["image"],
-                values[key]["price"],
-                values[key]["barcode"],
-                values[key]["weight"],
-                values[key]["cate"],
-                values[key]["priceNhap"],
-                values[key]["priceBuon"],
-                values[key]["amount"],
-                values[key]["desc"],
-                values[key]["allowSale"].toString(),
-                values[key]["tax"].toString(),
-                values[key]["priceVon"],
-                values[key]["ngayUp"],
-                values[key]["daban"],
-              );
-              productList.add(productDetail);
-            }
+
+
+            
             print("a" + sanpham.count.toString());
             for (var a in productList) {
               if (sanpham.id == a.id) {
-                referenceProduct.child(a.id).update({
-                  'amount': (int.parse(a.amount) + sanpham.count).toString(),
-                  'daban': (int.parse(a.daban) - sanpham.count).toString()
-                });
+                
               }
             }
-          });
+         
         }
       }
-    });
+ 
   }
 
   getList() {
@@ -267,24 +174,11 @@ class _OrderDetailScreenState extends State<OrderDetailScreen>
       idcus = idCustomer;
     }
     getAllCustomerList(idcus);
-    DatabaseReference referenceProduct =
-        FirebaseDatabase.instance.reference().child("Cart").child(idgiohang);
-    referenceProduct.once().then((DataSnapshot snapshot) {
+
       orderList.clear();
-      var keys = snapshot.value.keys;
-      var values = snapshot.value;
-      for (var key in keys) {
-        setState(() {
-          Sanpham sanpham = new Sanpham(
-            id: values[key]["id"],
-            name: values[key]["name"],
-            price: values[key]["price"],
-            count: int.parse(values[key]["count"]),
-          );
-          orderList.add(sanpham);
-        });
-      }
-    });
+      
+
+ 
   }
 
   @override
@@ -825,28 +719,19 @@ class _OrderDetailScreenState extends State<OrderDetailScreen>
     final Map data = ModalRoute.of(context).settings.arguments;
     idDonHangFB = data['idDonHang'].toString();
     if (formKey.currentState.validate()) {
-      DatabaseReference referenceTTDH = FirebaseDatabase.instance
-          .reference()
-          .child('Order')
-          .child(idDonHangFB);
+
 
       String trangthaiFB = tt.toString();
 
-      referenceTTDH.update({
-        "trangthai": trangthaiFB,
-      });
+
     }
   }
 
   Future<void> deleteOrder() async {
     final Map data = ModalRoute.of(context).settings.arguments;
     final idDonHang = data['idDonHang'];
-    DatabaseReference referenceList =
-        FirebaseDatabase.instance.reference().child('Order');
+  
 
-    referenceList.child(idDonHang).update({
-      "trangthai": "6",
-    });
   }
 
   // Future<void> deleteCart() async {

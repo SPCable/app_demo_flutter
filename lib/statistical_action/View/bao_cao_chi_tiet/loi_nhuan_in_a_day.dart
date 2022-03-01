@@ -1,4 +1,3 @@
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:quan_ly_taiducfood/order_action/View/Order/order_detail_screen.dart';
@@ -35,31 +34,7 @@ class _DonhangInADayState extends State<DonhangInADay>
     final Map data = ModalRoute.of(context).settings.arguments;
     var dateGetData = data['date'];
     var dataGetName = data['name'];
-    DatabaseReference referenceProduct =
-        FirebaseDatabase.instance.reference().child("Order");
-    referenceProduct.once().then((DataSnapshot snapshot) {
-      orderList.clear();
-      var keys = snapshot.value.keys;
-      var values = snapshot.value;
-      for (var key in keys) {
-        OrderList order = new OrderList(
-          values[key]["idDonHang"],
-          values[key]["idGioHang"],
-          values[key]["tongTienhang"],
-          values[key]["tongSoluong"],
-          values[key]["phiGiaohang"],
-          values[key]["chietKhau"],
-          values[key]["banSiLe"],
-          values[key]["paymethod"],
-          values[key]["idKhachHang"],
-          values[key]["ngaymua"],
-          values[key]["trangthai"],
-          values[key]["giomua"],
-          values[key]["tongGiaVon"],
-          values[key]["datetime"],
-        );
-        orderList.add(order);
-      }
+   
       orderListSortDate.clear();
       tongtienAll = 0;
       double tongMoney = 0;
@@ -89,7 +64,7 @@ class _DonhangInADayState extends State<DonhangInADay>
         }
       }
       setState(() {});
-    });
+
   }
 
   @override

@@ -1,4 +1,3 @@
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -28,34 +27,14 @@ class _AddFoodState extends State<AddFood> {
 
   List<Sanpham> list = [];
   doSomeThing(int id) {
-    DatabaseReference ref = FirebaseDatabase.instance.reference();
-    var data = ref.child("productList").child(id.toString()).child("Product");
-    data.once().then((DataSnapshot dataSnapshot) {
-      var keys = dataSnapshot.value.keys;
-      var values = dataSnapshot.value;
-      list.clear();
-      for (var key in keys) {
-        Sanpham sanpham = new Sanpham(
-          id: values[key]["id"],
-          name: values[key]["name"],
-          brand: values[key]["brand"],
-          price: values[key]["price"],
-          img: values[key]["image"],
-          amout: int.parse(values[key]["amount"]),
-          priceBuon: values[key]["priceBuon"],
-          priceVon: values[key]["priceVon"],
-          count: values[key]["count"],
-        );
-        list.add(sanpham);
-      }
-      setState(() {});
-    });
+    list.clear();
+
+    setState(() {});
   }
 
   List<PopularFilterListData> popularFilterListData =
       PopularFilterListData.popularFList;
   List<Sanpham> productList = [];
-  DatabaseReference ref = FirebaseDatabase.instance.reference();
   double distValue = 50.0;
 
   @override

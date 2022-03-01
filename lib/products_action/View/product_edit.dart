@@ -1,10 +1,7 @@
 import 'dart:io';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_image/network.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:path/path.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
@@ -88,13 +85,7 @@ class _ProductEditState extends State<ProductEdit> {
   ];
 
   Future downdloadImage() async {
-    await Firebase.initializeApp();
-    Reference imgReference =
-        FirebaseStorage.instance.ref().child(_controllerEditImage.text);
-    String downloadImg = await imgReference.getDownloadURL();
-    setState(() {
-      _downloadImgUrl = downloadImg;
-    });
+   
   }
 
   @override
@@ -630,17 +621,7 @@ class _ProductEditState extends State<ProductEdit> {
     );
   }
 
-  Future<void> editImg() async {
-    await Firebase.initializeApp();
-    String fileName = basename(_image.path);
-    Reference imgReference = FirebaseStorage.instance.ref().child(fileName);
-    UploadTask uploadTask = imgReference.putFile(_image);
-    // ignore: unused_local_variable
-    TaskSnapshot taskSnapshot = await uploadTask;
-    setState(() {
-      print('uploaded');
-    });
-  }
+  Future<void> editImg() async {}
 
   Future<void> edit() async {
     String fileName;
@@ -659,12 +640,6 @@ class _ProductEditState extends State<ProductEdit> {
     String _controllerWeightString;
     String idFood = productCate.id.toString();
     if (formKey.currentState.validate()) {
-      DatabaseReference referenceList = FirebaseDatabase.instance
-          .reference()
-          .child('productList')
-          .child(idFood)
-          .child('Product');
-
       _controllerPriceString =
           _controllerPrice.text.toString().replaceAll(",", "");
       _controllerPriceVonString =
@@ -691,22 +666,6 @@ class _ProductEditState extends State<ProductEdit> {
       // print(_controllerEditDesc.text.toString());
       // print(barcode.toString());
 
-      referenceList.child(_controllerEditId.text.toString()).update({
-        "name": _controllerEditName.text.toString(),
-        // "id": _controllerEditId.text.toString(),
-        "brand": _controllerEditBrand.text.toString(),
-        "price": _controllerPriceString.toString(),
-        "allowSale": allowSale,
-        "tax": tax,
-        "barcode": barcode.toString(),
-        "weight": _controllerWeightString.toString(),
-        "amount": _controllerAmountString.toString(),
-        "priceNhap": _controllerPriceNhapString.toString(),
-        "priceBuon": _controllerPriceBuonString.toString(),
-        "priceVon": _controllerPriceVonString.toString(),
-        "desc": _controllerEditDesc.text.toString(),
-        "image": fileName.toString(),
-      });
     }
   }
 
@@ -720,19 +679,9 @@ class _ProductEditState extends State<ProductEdit> {
     }
 
     if (formKey.currentState.validate()) {
-      DatabaseReference referenceSearch =
-          FirebaseDatabase.instance.reference().child('SearchList');
-
       _controllerPriceString =
           _controllerPrice.text.toString().replaceAll(",", "");
       print(_controllerPriceString);
-      referenceSearch.child(_controllerEditId.text.toString()).update({
-        "name": _controllerEditName.text.toString(),
-        // "id": _controllerEditId.text.toString(),
-        "brand": _controllerEditBrand.text.toString(),
-        "price": _controllerPriceString.toString(),
-        "image": fileName.toString(),
-      });
     }
   }
 }

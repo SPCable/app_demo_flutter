@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:ui';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -57,41 +56,9 @@ class _OrderListScreenState extends State<OrderListScreen>
   }
 
   getData() {
-    DatabaseReference referenceProduct =
-        FirebaseDatabase.instance.reference().child("Order");
-    referenceProduct.once().then((DataSnapshot snapshot) {
-      orderList.clear();
-      var keys = snapshot.value.keys;
-      var values = snapshot.value;
-      for (var key in keys) {
-        OrderList order = new OrderList(
-          values[key]["idDonHang"],
-          values[key]["idGioHang"],
-          values[key]["tongTienhang"],
-          values[key]["tongSoluong"],
-          values[key]["phiGiaohang"],
-          values[key]["chietKhau"],
-          values[key]["banSiLe"],
-          values[key]["paymethod"],
-          values[key]["idKhachHang"],
-          values[key]["ngaymua"],
-          values[key]["trangthai"],
-          values[key]["giomua"],
-          values[key]["tongGiaVon"],
-          values[key]["datetime"],
-        );
-        orderList.add(order);
-        orderList.sort((a, b) {
-          DateTime adate = DateTime.parse(a.datetime);
-          DateTime bdate = DateTime.parse(b.datetime);
-          return bdate.compareTo(adate);
-        });
-        for (var a in orderList) {
-          print(a.datetime);
-        }
-      }
+
       setState(() {});
-    });
+ 
   }
 
   getStatus(String id) {
@@ -138,32 +105,7 @@ class _OrderListScreenState extends State<OrderListScreen>
   }
 
   getLocgiatri(int i) {
-    DatabaseReference referenceProduct =
-        FirebaseDatabase.instance.reference().child("Order");
-    referenceProduct.once().then((DataSnapshot snapshot) {
-      orderList2.clear();
-      var keys = snapshot.value.keys;
-      var values = snapshot.value;
-      for (var key in keys) {
-        OrderList order = new OrderList(
-          values[key]["idDonHang"],
-          values[key]["idGioHang"],
-          values[key]["tongTienhang"],
-          values[key]["tongSoluong"],
-          values[key]["phiGiaohang"],
-          values[key]["chietKhau"],
-          values[key]["banSiLe"],
-          values[key]["paymethod"],
-          values[key]["idKhachHang"],
-          values[key]["ngaymua"],
-          values[key]["trangthai"],
-          values[key]["giomua"],
-          values[key]["tongGiaVon"],
-          values[key]["datetime"],
-        );
-        orderList.add(order);
-        orderList2.add(order);
-      }
+ 
 
       if (i == 1) {
         orderList.clear();
@@ -301,7 +243,7 @@ class _OrderListScreenState extends State<OrderListScreen>
       }
 
       setState(() {});
-    });
+   
   }
 
   @override
@@ -851,44 +793,13 @@ class _OrderListScreenState extends State<OrderListScreen>
 
   // ignore: non_constant_identifier_names
   void Search(text) {
-    DatabaseReference searchRef =
-        FirebaseDatabase.instance.reference().child("Order");
-    searchRef.once().then((DataSnapshot snapshot) {
-      orderList2.clear();
-      orderList.clear();
-      var keys = snapshot.value.keys;
-      var values = snapshot.value;
+  
+   
 
-      for (var key in keys) {
-        OrderList order = new OrderList(
-          values[key]["idDonHang"],
-          values[key]["idGioHang"],
-          values[key]["tongTienhang"],
-          values[key]["tongSoluong"],
-          values[key]["phiGiaohang"],
-          values[key]["chietKhau"],
-          values[key]["banSiLe"],
-          values[key]["paymethod"],
-          values[key]["idKhachHang"],
-          values[key]["ngaymua"],
-          values[key]["trangthai"],
-          values[key]["giomua"],
-          values[key]["tongGiaVon"],
-          values[key]["datetime"],
-        );
-        if (order.idKhachHang.toLowerCase().contains(text)) {
-          orderList.add(order);
-          orderList.sort((a, b) {
-            DateTime adate = DateTime.parse(a.datetime);
-            DateTime bdate = DateTime.parse(b.datetime);
-            return bdate.compareTo(adate);
-          });
-        }
-      }
       Timer(Duration(seconds: 1), () {
         setState(() {});
       });
-    });
+   
   }
 }
 

@@ -1,11 +1,8 @@
 import 'dart:collection';
 import 'dart:io';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
@@ -541,81 +538,44 @@ class _ProductAddState extends State<ProductAdd> {
 
   checkId(BuildContext context) {
     String idFood = productCate.id.toString();
-    DatabaseReference referenceList = FirebaseDatabase.instance
-        .reference()
-        .child('productList')
-        .child(idFood)
-        .child('Product');
-    referenceList.once().then((DataSnapshot snapshot) {
-      var keys = snapshot.value.keys;
-      var values = snapshot.value;
 
-      // ignore: missing_return
-      bool cId() {
-        if (formKey.currentState.validate()) {
-          for (var key in keys) {
-            if (values[key]["id"] == id) {
-              Fluttertoast.showToast(
-                  msg: "Sản phẩm đã thêm rồi",
-                  toastLength: Toast.LENGTH_SHORT,
-                  gravity: ToastGravity.BOTTOM,
-                  timeInSecForIosWeb: 1,
-                  textColor: Colors.black87,
-                  fontSize: 16.0);
-              print('a');
-              return true;
-            }
-          }
-          print('b');
-          return false;
-        }
+    // ignore: missing_return
+    bool cId() {
+      if (formKey.currentState.validate()) {
+        print('b');
+        return false;
       }
+    }
 
-      if (cId() == false) {
-        print('-----------------');
-        print('chưa có sp thím ơi');
-        uploadImg();
-        uploadSearchList();
-        upload();
-        Fluttertoast.showToast(
-            msg: "Thêm sản phẩm thành công",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.BOTTOM,
-            timeInSecForIosWeb: 1,
-            textColor: Colors.black87,
-            fontSize: 16.0);
-        Navigator.pop(context);
-      }
-      if (cId() == true) {
-        print('-----------------');
-        print('có sp r thím ơi');
-      }
-    });
+    if (cId() == false) {
+      print('-----------------');
+      print('chưa có sp thím ơi');
+      uploadImg();
+      uploadSearchList();
+      upload();
+      Fluttertoast.showToast(
+          msg: "Thêm sản phẩm thành công",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          textColor: Colors.black87,
+          fontSize: 16.0);
+      Navigator.pop(context);
+    }
+    if (cId() == true) {
+      print('-----------------');
+      print('có sp r thím ơi');
+    }
   }
 
-  Future<void> uploadImg() async {
-    await Firebase.initializeApp();
-    String fileName = basename(_image.path);
-    Reference imgReference = FirebaseStorage.instance.ref().child(fileName);
-    UploadTask uploadTask = imgReference.putFile(_image);
-    // ignore: unused_local_variable
-    TaskSnapshot taskSnapshot = await uploadTask;
-    setState(() {
-      print('uploaded');
-    });
-  }
+  Future<void> uploadImg() async {}
 
   Future<void> upload() async {
     final now = DateTime.now();
     String fileName = basename(_image.path);
     String idFood = productCate.id.toString();
     if (formKey.currentState.validate()) {
-      DatabaseReference referenceList = FirebaseDatabase.instance
-          .reference()
-          .child('productList')
-          .child(idFood)
-          .child('Product');
-      // String uploadId = reference.push().key;
+
       HashMap mapProList = new HashMap();
 
       weight = weight.replaceAll(",", "");
@@ -643,7 +603,6 @@ class _ProductAddState extends State<ProductAdd> {
       mapProList["ngayUp"] = DateFormat('dd/MM/yyyy').format(now).toString();
       mapProList["daban"] = "0";
 
-      referenceList.child(id).set(mapProList);
     }
   }
 
@@ -651,8 +610,7 @@ class _ProductAddState extends State<ProductAdd> {
     String fileName = basename(_image.path);
     DateTime now = DateTime.now();
     if (formKey.currentState.validate()) {
-      DatabaseReference referenceSearch =
-          FirebaseDatabase.instance.reference().child('SearchList');
+
 
       HashMap mapSearch = new HashMap();
 
@@ -666,7 +624,6 @@ class _ProductAddState extends State<ProductAdd> {
       mapSearch["idMain"] = productCate.id.toString();
       mapSearch["dateUp"] = now.toString();
 
-      referenceSearch.child(id).set(mapSearch);
     }
   }
 }

@@ -1,4 +1,3 @@
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:quan_ly_taiducfood/main.dart';
@@ -39,36 +38,7 @@ class _CategoryListViewState extends State<CategoryListView>
   getSapXepProduct() {
     producList.clear();
     for (int i = 1; i < 10; i++) {
-      DatabaseReference referenceProduct = FirebaseDatabase.instance
-          .reference()
-          .child('productList')
-          .child(i.toString())
-          .child('Product');
-      referenceProduct.once().then((DataSnapshot snapshot) {
-        var keys = snapshot.value.keys;
-        var values = snapshot.value;
 
-        for (var key in keys) {
-          ProductDetail productDetail = new ProductDetail(
-              values[key]["id"],
-              values[key]["brand"],
-              values[key]["name"],
-              values[key]["image"],
-              values[key]["price"],
-              values[key]["barcode"],
-              values[key]["weight"],
-              values[key]["cate"],
-              values[key]["priceNhap"],
-              values[key]["priceBuon"],
-              values[key]["amount"],
-              values[key]["desc"],
-              values[key]["allowSale"].toString(),
-              values[key]["tax"].toString(),
-              values[key]["priceVon"],
-              values[key]["ngayUp"],
-              values[key]["daban"]);
-          producList.add(productDetail);
-        }
 
         producList.sort((a, b) {
           var adate = int.parse(a.daban);
@@ -77,41 +47,10 @@ class _CategoryListViewState extends State<CategoryListView>
         });
         for (var r in producList) {}
 
-        // for (var sp in producList) {
-        //   if (int.parse(sp.daban) > 3) {
-        //     print(sp.name);
-        //   }
-        // }
-      });
     }
   }
 
   getDoanhThu() {
-    DatabaseReference referenceProduct =
-        FirebaseDatabase.instance.reference().child("Order");
-    referenceProduct.once().then((DataSnapshot snapshot) {
-      orderList.clear();
-      var keys = snapshot.value.keys;
-      var values = snapshot.value;
-      for (var key in keys) {
-        OrderList order = new OrderList(
-          values[key]["idDonHang"],
-          values[key]["idGioHang"],
-          values[key]["tongTienhang"],
-          values[key]["tongSoluong"],
-          values[key]["phiGiaohang"],
-          values[key]["chietKhau"],
-          values[key]["banSiLe"],
-          values[key]["paymethod"],
-          values[key]["idKhachHang"],
-          values[key]["ngaymua"],
-          values[key]["trangthai"],
-          values[key]["giomua"],
-          values[key]["tongGiaVon"],
-          values[key]["datetime"],
-        );
-        orderList.add(order);
-      }
       for (var sp in orderList) {
         if (sp.trangthai == "4") {
           giaDoanhthu += double.parse(sp.tongTienhang);
@@ -126,7 +65,7 @@ class _CategoryListViewState extends State<CategoryListView>
         tientrakhach = thanhtoandonhang - giaDoanhthu;
         tienCuoicung = thanhtoandonhang - tientrakhach;
       }
-    });
+    
   }
 
   @override

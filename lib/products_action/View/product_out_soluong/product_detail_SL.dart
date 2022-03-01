@@ -1,4 +1,3 @@
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
@@ -634,29 +633,14 @@ class _ProductDetailNotificationState extends State<ProductDetailNotification>
     final Map data = ModalRoute.of(context).settings.arguments;
     final idFood = data['id'];
     for (int i = 1; i < 10; i++) {
-      DatabaseReference referenceList = FirebaseDatabase.instance
-          .reference()
-          .child('productList')
-          .child(i.toString())
-          .child('Product');
-      referenceList.once().then((DataSnapshot snapshot) {
-        var keys = snapshot.value.keys;
 
-        for (var key in keys) {
-          if (key == idFood) {
-            referenceList.child(idFood).remove();
-          }
-        }
-      });
+      
     }
   }
 
   Future<void> deleteSearchList() async {
     final Map data = ModalRoute.of(context).settings.arguments;
     final idFood = data['id'];
-    DatabaseReference referenceList =
-        FirebaseDatabase.instance.reference().child('SearchList');
-
-    referenceList.child(idFood).remove();
+ 
   }
 }
