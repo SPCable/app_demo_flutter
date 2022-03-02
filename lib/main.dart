@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:quan_ly_taiducfood/desgin/menu_item.dart';
 import 'dart:io';
 import 'package:quan_ly_taiducfood/nhaphang_action/theme/nhaphang_theme.dart';
 import 'package:flutter/services.dart';
@@ -22,8 +24,23 @@ void main() async {
   ]).then((_) => runApp(MyApp()));
 }
 
+var fontStyle = TextStyle(color: Colors.white, fontSize: 16);
+var fontStyle1 = TextStyle(color: Colors.white54, fontSize: 14);
+var fontStyle2 = TextStyle(color: Colors.white54, fontSize: 12);
+var menu = [
+  'Thị trường',
+  'Tin tức',
+  'Phân tích',
+  'Quản lý tài khoản',
+  'Tiện ích',
+  'Báo cáo',
+  'Cài đặt',
+  'Hỗ trợ'
+];
+
+var menuList = MenuItem.menuList;
+
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
@@ -76,29 +93,65 @@ class MyApp extends StatelessWidget {
 
 Widget myDrawerBody() {
   return Container(
-      color: HexColor("001D33"),
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: 8.0),
-        child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    color: HexColor("001D33"),
+    child: Column(
+      children: menuList.map((e) => menuItem(e.titleTxt)),
+    ),
+  );
+}
+
+Widget myDrawerHeader() {
+  return Column(
+    children: [
+      Container(
+        color: Colors.green,
+        padding: EdgeInsets.only(top: 64),
+        child: Padding(
+          padding: const EdgeInsets.only(bottom: 8.0),
+          child: Column(
             children: [
-              CircleAvatar(
-                backgroundColor: Colors.transparent,
-                child: Icon(
-                  Icons.account_circle_sharp,
-                  size: 50,
-                  color: Colors.white54,
-                ),
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [],
+                  CircleAvatar(
+                    backgroundColor: Colors.transparent,
+                    child: Icon(
+                      Icons.account_circle_sharp,
+                      size: 50,
+                      color: Colors.white54,
+                    ),
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(
+                            "Cao Thi Niem",
+                            style: fontStyle,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 8),
+                            child: Icon(
+                              Icons.edit_outlined,
+                              color: Colors.white,
+                              size: 28,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Text(
+                        "Thuong.009C104217",
+                        style: fontStyle1,
+                      ),
+                    ],
                   ),
                   IconButton(
                     onPressed: () {},
@@ -110,72 +163,54 @@ Widget myDrawerBody() {
                   )
                 ],
               ),
-            ]),
-      ));
-}
-
-Widget myDrawerHeader() {
-  var fontStyle = TextStyle(color: Colors.white, fontSize: 16);
-  var fontStyle1 = TextStyle(color: Colors.white54, fontSize: 14);
-  return Container(
-    color: Colors.green,
-    padding: EdgeInsets.only(top: 64),
-    child: Padding(
-      padding: const EdgeInsets.only(bottom: 8.0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          CircleAvatar(
-            backgroundColor: Colors.transparent,
-            child: Icon(
-              Icons.account_circle_sharp,
-              size: 50,
-              color: Colors.white54,
-            ),
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    "Cao Thi Niem",
-                    style: fontStyle,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 8),
-                    child: Icon(
-                      Icons.edit_outlined,
-                      color: Colors.white,
-                      size: 28,
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 5,
-              ),
-              Text(
-                "Thuong.009C104217",
-                style: fontStyle1,
-              ),
             ],
           ),
-          IconButton(
-            onPressed: () {},
-            icon: Icon(
-              Icons.logout_outlined,
-              color: Colors.white,
-              size: 32,
-            ),
-          )
-        ],
+        ),
       ),
-    ),
+      Container(
+        padding: EdgeInsets.all(8),
+        color: HexColor("001D33"),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Đăng nhập gần nhất: 23/02/2022 15:19:25",
+              style: fontStyle2,
+            ),
+            SizedBox(
+              height: 8,
+            ),
+            SizedBox(
+              child: Container(
+                child: TextField(
+                  decoration: InputDecoration(
+                    contentPadding: EdgeInsets.zero,
+                    focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: BorderSide(
+                          color: Colors.transparent,
+                        )),
+                    prefixIcon: Icon(
+                      Icons.search,
+                      color: Colors.white54,
+                    ),
+                    hintText: "Tìm kiếm",
+                    hintStyle: fontStyle2,
+                    filled: true,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    fillColor: HexColor("142F43"),
+                  ),
+                  style: fontStyle,
+                ),
+              ),
+              height: 40,
+            ),
+          ],
+        ),
+      ),
+    ],
   );
 }
 
@@ -189,4 +224,21 @@ class HexColor extends Color {
     }
     return int.parse(hexColor, radix: 16);
   }
+}
+
+Widget menuItem(String text) {
+  return Container(
+    color: HexColor("142F43"),
+    child: ListTile(
+      onTap: () {},
+      title: Text(
+        text,
+        style: fontStyle,
+      ),
+      leading: Icon(
+        Icons.ac_unit_outlined,
+        color: Colors.green[900],
+      ),
+    ),
+  );
 }
