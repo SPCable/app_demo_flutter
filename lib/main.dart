@@ -95,7 +95,7 @@ Widget myDrawerBody() {
   return Container(
     color: HexColor("001D33"),
     child: Column(
-      children: menuList.map((e) => menuItem(e.titleTxt)),
+      children: menu.map((e) => menuItem(e)).toList(),
     ),
   );
 }
